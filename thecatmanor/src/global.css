@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --snow: #FAFAFA;
+  --ash: #BDBDBD;
+  --charcoal: #333333;
+  --dusty: #CBBBA0;
+  --sage: #9BAF9B;
+  --terracotta: #D17A66;
+}
+
+.bg-snow { background-color: var(--snow); }
+.bg-ash { background-color: var(--ash); }
+.bg-charcoal { background-color: var(--charcoal); }
+.bg-dusty { background-color: var(--dusty); }
+.bg-sage { background-color: var(--sage); }
+.bg-terracotta { background-color: var(--terracotta); }
+
+.text-snow { color: var(--snow); }
+.text-ash { color: var(--ash); }
+.text-charcoal { color: var(--charcoal); }
+.text-dusty { color: var(--dusty); }
+.text-sage { color: var(--sage); }
+.text-terracotta { color: var(--terracotta); }
+
+.border-ash { border-color: var(--ash); }
+.border-dusty { border-color: var(--dusty); }
