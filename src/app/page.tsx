@@ -24,9 +24,6 @@ export default function Home() {
               <Link href="/products" className="px-8 py-3 bg-deep-charcoal text-snow font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-charcoal hover:shadow-elegant">
                 Explore Collection
               </Link>
-              <Link href="/consultation" className="px-8 py-3 border-2 border-deep-charcoal text-deep-charcoal font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-deep-charcoal hover:text-snow">
-                Design Consultation
-              </Link>
             </div>
           </div>
         </div>
@@ -76,7 +73,7 @@ export default function Home() {
                 Design Service
               </h3>
               <p className="text-ash leading-relaxed">
-                Professional design consultation to ensure perfect integration 
+                Professional design service to ensure perfect integration 
                 with your existing interior design.
               </p>
             </div>
@@ -91,11 +88,11 @@ export default function Home() {
             Ready to Transform Your Space?
           </h2>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Book a design consultation and discover how our modular 
+            Explore our collection and discover how our modular 
             cat furniture can enhance your modern living space.
           </p>
-          <Link href="/consultation" className="px-8 py-3 bg-terracotta text-snow font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-opacity-90 hover:shadow-elegant">
-            Schedule Consultation
+          <Link href="/products" className="px-8 py-3 bg-terracotta text-snow font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-opacity-90 hover:shadow-elegant">
+            Browse Collection
           </Link>
         </div>
       </section>

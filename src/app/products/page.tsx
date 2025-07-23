@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { products } from "../../data/products";
-import ProductCard from "../../components/ProductCard";
+import { products } from "@/data/products";
+import ProductCard from "@/components/ProductCard";
 
 export default function ProductsPage() {
   const collections = ["All", "Signature", "Essential", "Eco"];

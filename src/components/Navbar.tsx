@@ -51,13 +51,6 @@ export default function Navbar() {
 
           {/* CTA and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
-            <Link 
-              href="/consultation" 
-              className="hidden lg:block px-8 py-3 bg-orange-500 text-white font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-orange-600 hover:shadow-lg"
-            >
-              Consultation
-            </Link>
-            
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -110,13 +103,6 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               Contact
-            </Link>
-            <Link 
-              href="/consultation" 
-              className="block px-8 py-3 bg-orange-500 text-white font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-orange-600 hover:shadow-lg mt-4"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Consultation
             </Link>
           </div>
         </div>
