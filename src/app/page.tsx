@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export default function Home() {
   return (
@@ -139,6 +140,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      <SpeedInsights />
     </>
   );
 }
