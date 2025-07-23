@@ -13,6 +13,21 @@ The Cat Manor is an e-commerce website showcasing premium cat furniture includin
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Runtime**: [React 19](https://react.dev/)
 - **Build Tool**: [PostCSS](https://postcss.org/) with Autoprefixer
+- **Deployment**: [Vercel](https://vercel.com/) with automated CI/CD
+- **E-commerce**: [Shopify Storefront API](https://shopify.dev/api/storefront)
+
+## 📚 Documentation
+
+Complete documentation is available in the [`docs/`](./docs/) folder:
+
+- **[Setup Guide](./docs/setup/)** - Project setup and configuration
+- **[Development Workflow](./docs/development/)** - CI/CD, quality gates, and development process  
+- **[Deployment Guide](./docs/deployment/)** - Vercel deployment with quality protection
+
+Quick links:
+- 🚀 **[Vercel Deployment](./docs/deployment/VERCEL_DEPLOYMENT.md)** - Production deployment guide
+- ⚙️ **[Environment Setup](./docs/setup/ENVIRONMENT.md)** - Environment variables configuration
+- 🛠️ **[Development Workflow](./docs/development/WORKFLOW.md)** - Complete development process
 
 ## 📋 Prerequisites
 
@@ -88,6 +103,11 @@ npm run lint
 
 ```
 thecatmanor/
+├── docs/                   # 📚 Complete project documentation
+│   ├── deployment/        # Deployment guides (Vercel, CI/CD)
+│   ├── development/       # Development workflow & processes
+│   ├── setup/             # Project setup & configuration
+│   └── README.md          # Documentation index
 ├── public/                 # Static assets
 │   └── images/            # Product images and media
 ├── src/

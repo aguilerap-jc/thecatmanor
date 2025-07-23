@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Optimize images
+  // Optimize images for Vercel deployment
   images: {
     formats: ['image/webp', 'image/avif'],
   },

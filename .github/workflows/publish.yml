@@ -1,0 +1,114 @@
+# File: .github/workflows/publish.yml
+name: quality-check-for-vercel-deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: "quality-checks-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  # Job 1: Quality Gates - Prevent publishing breaking changes
+  quality-gates:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run TypeScript type check 🔍
+        run: npx tsc --noEmit
+        
+      - name: Run ESLint 📋
+        run: npm run lint
+        
+      - name: Check code formatting 💅
+        run: npx prettier --check "src/**/*.{ts,tsx,js,jsx,json,css,md}"
+        
+      - name: Run security audit 🛡️
+        run: npm audit --audit-level moderate
+        
+      - name: Check for vulnerabilities 🚨
+        run: npx audit-ci --moderate
+
+  # Job 2: Build Test for Vercel Compatibility
+  build-test:
+    name: Vercel Build Test
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+        
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for Vercel 🏗️
+        run: npm run build:ci
+        env:
+          # Use dummy environment variables for CI build
+          NEXT_PUBLIC_SHOPIFY_DOMAIN: dummy-store.myshopify.com
+          NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: dummy-token-for-ci
+          
+      - name: Test production build 🧪
+        run: |
+          npm run start &
+          SERVER_PID=$!
+          sleep 10
+          curl -f http://localhost:3000 || exit 1
+          kill $SERVER_PID 2>/dev/null || true
+
+      - name: Build success notification 📢
+        if: success()
+        run: |
+          echo "✅ Build successful! Ready for Vercel deployment."
+          echo "📊 Build stats:"
+          echo "   - TypeScript: ✅ No errors"
+          echo "   - ESLint: ✅ Quality checks passed"
+          echo "   - Security: ✅ No vulnerabilities"
+          echo "   - Build: ✅ Production build successful"
+
+  # Job 3: Deployment Status (Informational)
+  deployment-ready:
+    name: Deployment Ready
+    runs-on: ubuntu-latest
+    needs: [quality-gates, build-test]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Deployment ready notification 🚀
+        run: |
+          echo "🎉 All quality checks passed!"
+          echo "🚀 Code is ready for Vercel deployment."
+          echo ""
+          echo "Vercel will automatically deploy this commit to:"
+          echo "📍 Production: https://thecatmanor.vercel.app"
+          echo "📍 Preview: Available on pull requests"
+          echo ""
+          echo "⚙️ Deployment will use environment variables from Vercel dashboard."
