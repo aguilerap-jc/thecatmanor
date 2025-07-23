@@ -82,7 +82,6 @@ dist/
 
 # Gatsby files
 .cache/
-public/
 
 # Storybook build outputs
 .out/
@@ -193,5 +192,17 @@ coverage/
 
 # SvelteKit build / generate output
 .svelte-kit
+
+#environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug and log files
+*.log
+logs/
+errors.log
 
 # End of https://www.gitignore.io/api/node

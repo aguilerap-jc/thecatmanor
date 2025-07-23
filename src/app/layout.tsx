@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import React from "react";
 import "../global.css";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "The Cat Manor – Modern Cat Furniture",
