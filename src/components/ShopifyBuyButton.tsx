@@ -44,12 +44,6 @@ export default function ShopifyBuyButton({
     setIsLoading(true);
     
     try {
-      console.log('🛒 Adding to cart:', {
-        variantId: variantId,
-        productId: productId,
-        productTitle: productTitle
-      });
-      
       const lineItemsToAdd = [{
         variantId: variantId || productId,
         quantity: 1

@@ -20,15 +20,6 @@ class ShopifyProductManager {
       const domain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'your-store.myshopify.com';
       const token = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token';
       
-      console.log('🔧 [DEBUG] Initializing Shopify client:', {
-        domain,
-        hasToken: !!token,
-        tokenPrefix: token ? token.substring(0, 8) + '...' : 'none',
-        envDomain: process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN,
-        envToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN ? 'set' : 'not set',
-        windowExists: typeof window !== 'undefined'
-      });
-      
       if (!domain || !token) {
         throw new Error('Missing Shopify domain or access token');
       }
@@ -39,17 +30,12 @@ class ShopifyProductManager {
         apiVersion: '2023-01' // Using older stable version for better compatibility
       });
       
-      console.log('✅ [DEBUG] Shopify client initialized successfully', {
-        clientType: typeof this.client,
-        hasProductFetch: typeof this.client?.product?.fetch === 'function'
-      });
-      
       // Test the connection with a simple query
       if (typeof window !== 'undefined') {
         this.testConnection();
       }
     } catch (error) {
-      console.error('❌ [DEBUG] Failed to initialize Shopify client:', error);
+      console.error('Failed to initialize Shopify client:', error);
       this.client = null;
     }
   }
@@ -58,91 +44,47 @@ class ShopifyProductManager {
     if (!this.client) return;
     
     try {
-      console.log('🧪 [DEBUG] Testing Shopify connection...');
       // Try to fetch shop info to test the connection
       const shop = await this.client.shop.fetchInfo();
-      console.log('✅ [DEBUG] Shopify connection test successful:', {
-        shopName: shop.name,
-        domain: shop.domain,
-        description: shop.description
-      });
     } catch (testError) {
-      console.log('⚠️ [DEBUG] Shop info test failed:', testError);
+      // Shop info test failed, continue anyway
     }
     
     // Always try to fetch available products to see what exists
     try {
-      console.log('🛍️ [DEBUG] Fetching available products...');
       const products = await this.client.product.fetchAll(5); // Fetch up to 5 products
-      console.log('✅ [DEBUG] Available products in store:', products.map((p: any) => ({
-        id: p.id,
-        title: p.title,
-        handle: p.handle,
-        variants: p.variants.length
-      })));
-      
-      if (products.length > 0) {
-        console.log('💡 [DEBUG] Example product IDs you could use:');
-        products.forEach((p: any) => {
-          console.log(`  - ID: ${p.id} | Title: "${p.title}" | Handle: "${p.handle}"`);
-        });
-      }
-      
     } catch (productsError) {
-      console.log('❌ [DEBUG] Could not fetch products:', productsError);
+      // Could not fetch products, continue anyway
     }
   }
 
   async fetchProductData(config: ShopifyProductConfig): Promise<ShopifyProductData> {
-    console.log('🚀 [DEBUG] fetchProductData called with config:', {
-      id: config.id,
-      shopifyProductId: config.shopifyProductId,
-      shopifyVariantId: config.shopifyVariantId,
-      shopifyHandle: config.shopifyHandle
-    });
-
     // Check cache first
     if (this.cache.has(config.shopifyProductId)) {
-      console.log('💾 [DEBUG] Returning cached product for:', config.shopifyProductId);
       return this.cache.get(config.shopifyProductId)!;
     }
 
     // Ensure client is initialized (client-side only)
     if (typeof window !== 'undefined' && !this.client) {
-      console.log('🔄 [DEBUG] Client not initialized, initializing now...');
       this.initializeClient();
     }
 
     // If no client available, return fallback data
     if (!this.client) {
-      console.log('⚠️ [DEBUG] No Shopify client available, using fallback data');
-      console.log('🔧 [DEBUG] Client initialization status:', {
-        clientExists: !!this.client,
-        windowDefined: typeof window !== 'undefined',
-        isServer: typeof window === 'undefined'
-      });
       return this.createFallbackProduct(config);
     }
 
     try {
-      console.log('🛒 [DEBUG] Fetching Shopify product:', config.shopifyProductId);
-      
       // Try different methods to fetch the product
       let shopifyProduct;
       
       // Method 1: Try using the product handle first (most reliable)
       if (config.shopifyHandle) {
         try {
-          console.log('🔄 [DEBUG] Trying to fetch by handle:', config.shopifyHandle);
           const products = await this.client.product.fetchAll();
           shopifyProduct = products.find((p: any) => p.handle === config.shopifyHandle);
-          if (shopifyProduct) {
-            console.log('✅ [DEBUG] Success fetching by handle');
-          } else {
-            console.log('⚠️ [DEBUG] Product not found by handle');
-          }
         } catch (handleError) {
-          console.log('⚠️ [DEBUG] Handle fetch failed:', handleError);
+          // Handle fetch failed, continue to next method
         }
       }
       
@@ -153,10 +95,8 @@ class ShopifyProductManager {
         
         if (config.shopifyProductId.startsWith('gid://shopify/Product/')) {
           productIdToFetch = config.shopifyProductId.replace('gid://shopify/Product/', '');
-          console.log('🔄 [DEBUG] Extracted numeric ID from GID:', productIdToFetch);
         } else {
           productIdToFetch = config.shopifyProductId;
-          console.log('🔄 [DEBUG] Using provided ID as-is:', productIdToFetch);
         }
         
         // Validate the ID is numeric
@@ -164,15 +104,8 @@ class ShopifyProductManager {
           throw new Error(`Invalid product ID format: ${productIdToFetch}. Expected numeric ID.`);
         }
         
-        console.log('🔄 [DEBUG] Attempting to fetch product with numeric ID:', productIdToFetch);
         shopifyProduct = await this.client.product.fetch(productIdToFetch);
       }
-      
-      console.log('✅ [DEBUG] Shopify product fetched successfully:', {
-        id: shopifyProduct.id,
-        title: shopifyProduct.title,
-        variantsCount: shopifyProduct.variants?.length
-      });
       
       const transformedProduct = this.transformShopifyProduct(shopifyProduct, config);
       
@@ -181,30 +114,7 @@ class ShopifyProductManager {
       
       return transformedProduct;
     } catch (error) {
-      console.log('❌ [DEBUG] Error fetching Shopify product:', {
-        productId: config.shopifyProductId,
-        numericId: config.shopifyProductId.replace('gid://shopify/Product/', ''),
-        error: error instanceof Error ? error.message : String(error),
-        errorStack: error instanceof Error ? error.stack : undefined,
-        clientExists: !!this.client,
-        hasToken: !!process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-        domain: process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        fullError: error,
-        errorJSON: JSON.stringify(error, null, 2)
-      });
-      
-      // Log the GraphQL errors specifically if they exist
-      if (error && typeof error === 'object' && 'graphQLErrors' in error) {
-        console.log('🔍 [DEBUG] GraphQL Errors:', error.graphQLErrors);
-      }
-      
-      // Log network errors specifically
-      if (error && typeof error === 'object' && 'networkError' in error) {
-        console.log('🌐 [DEBUG] Network Error:', error.networkError);
-      }
-      
-      console.log('🔄 [DEBUG] Falling back to default product data');
+      // Error fetching Shopify product, fall back to default
       return this.createFallbackProduct(config);
     }
   }
@@ -224,22 +134,17 @@ class ShopifyProductManager {
 
     // Fix image URL if it has protocol issues
     let imageUrl = mainImage?.src || config.fallbackData?.image || '/images/placeholder.jpg';
-    console.log('🖼️ [DEBUG] Original image URL:', imageUrl);
     
     if (typeof imageUrl === 'string') {
       // Fix common protocol issues
       if (imageUrl.startsWith('https:/') && !imageUrl.startsWith('https://')) {
         imageUrl = imageUrl.replace('https:/', 'https://');
-        console.log('🔧 [DEBUG] Fixed protocol, new URL:', imageUrl);
       }
       // Ensure it starts with https:// for external URLs
       else if (imageUrl.includes('cdn.shopify.com') && !imageUrl.startsWith('https://')) {
         imageUrl = 'https://' + imageUrl.replace(/^https?:\/\//, '');
-        console.log('🔧 [DEBUG] Ensured https protocol, new URL:', imageUrl);
       }
     }
-    
-    console.log('🖼️ [DEBUG] Final image URL:', imageUrl);
 
     return {
       id: config.id,
@@ -355,67 +260,41 @@ class ShopifyProductManager {
   }
 
   async fetchCollectionProducts(config: ShopifyCollectionConfig): Promise<ShopifyProductData[]> {
-    console.log('📂 [DEBUG] fetchCollectionProducts called with config:', {
-      id: config.id,
-      shopifyCollectionId: config.shopifyCollectionId,
-      shopifyHandle: config.shopifyHandle,
-      maxProducts: config.maxProducts
-    });
-
     // Check cache first
     if (this.collectionCache.has(config.shopifyCollectionId)) {
-      console.log('💾 [DEBUG] Returning cached collection for:', config.shopifyCollectionId);
       return this.collectionCache.get(config.shopifyCollectionId)!;
     }
 
     // Ensure client is initialized (client-side only)
     if (typeof window !== 'undefined' && !this.client) {
-      console.log('🔄 [DEBUG] Client not initialized, initializing now...');
       this.initializeClient();
     }
 
     // If no client available, return empty array
     if (!this.client) {
-      console.log('⚠️ [DEBUG] No Shopify client available for collection fetch');
       return [];
     }
 
     try {
-      console.log('🛒 [DEBUG] Fetching Shopify collection:', config.shopifyCollectionId);
-      
-      // Check what collection methods are available
-      console.log('🔧 [DEBUG] Available client methods:', Object.keys(this.client));
-      console.log('� [DEBUG] Collection methods:', this.client.collection ? Object.keys(this.client.collection) : 'No collection property');
-      
       // Try GraphQL approach first for better collection support
-      console.log('🔧 [DEBUG] Trying GraphQL approach for collection fetching...');
-      
       try {
         const graphQLProducts = await this.fetchCollectionWithGraphQL(config);
         if (graphQLProducts.length > 0) {
-          console.log(`✅ [DEBUG] GraphQL returned ${graphQLProducts.length} products`);
           this.collectionCache.set(config.shopifyCollectionId, graphQLProducts);
           return graphQLProducts;
         }
       } catch (graphQLError) {
-        console.log('⚠️ [DEBUG] GraphQL approach failed, falling back to alternative method:', graphQLError);
+        // GraphQL approach failed, use alternative method
       }
       
       // Alternative approach: Fetch all products and check their collections
-      console.log('🔄 [DEBUG] Using alternative approach: fetching all products to find collection members...');
-      
       const allProducts = await this.client.product.fetchAll(50); // Fetch more products to search through
-      console.log(`📦 [DEBUG] Fetched ${allProducts.length} total products to search for collection members`);
       
       // Extract collection ID for comparison
       const targetCollectionId = config.shopifyCollectionId.replace('gid://shopify/Collection/', '');
-      console.log('🎯 [DEBUG] Looking for products in collection ID:', targetCollectionId);
       
       // Since Shopify Buy SDK doesn't include collection information in products,
       // we'll use a workaround: return first few products as "collection" products for demo
-      console.log(`⚠️ [DEBUG] Note: Shopify Buy SDK has limited collection support. Returning first ${config.maxProducts || 2} products as collection demo.`);
-      console.log(`💡 [DEBUG] For full collection support, consider using Shopify Admin API instead of Buy SDK.`);
-      
       const demoCollectionProducts = allProducts.slice(0, config.maxProducts || 2).map((product: any, index: number) => {
         // Create a temporary config for each product
         const tempConfig: ShopifyProductConfig = {
@@ -432,25 +311,15 @@ class ShopifyProductManager {
         };
 
         const transformedProduct = this.transformShopifyProduct(product, tempConfig);
-        console.log(`✅ [DEBUG] Added collection product: ${transformedProduct.name} (${transformedProduct.price})`);
         return transformedProduct;
       });
       
-      console.log(`✅ [DEBUG] Found ${demoCollectionProducts.length} products in collection`);
-
       // Cache the result
       this.collectionCache.set(config.shopifyCollectionId, demoCollectionProducts);
       
       return demoCollectionProducts;
     } catch (error) {
-      console.log('❌ [DEBUG] Error fetching Shopify collection:', {
-        collectionId: config.shopifyCollectionId,
-        error: error instanceof Error ? error.message : String(error),
-        errorStack: error instanceof Error ? error.stack : undefined,
-        clientExists: !!this.client
-      });
-      
-      console.log('🔄 [DEBUG] Returning empty array for collection');
+      // Error fetching collection, return empty array
       return [];
     }
   }
@@ -459,8 +328,6 @@ class ShopifyProductManager {
    * Fetch collection products using GraphQL (more powerful than REST API)
    */
   private async fetchCollectionWithGraphQL(config: ShopifyCollectionConfig): Promise<ShopifyProductData[]> {
-    console.log(`🚀 [DEBUG] Using GraphQL to fetch collection: ${config.shopifyCollectionId}`);
-    
     const query = `
       query getCollection($id: ID!) {
         collection(id: $id) {
@@ -502,27 +369,17 @@ class ShopifyProductManager {
       }
     `;
 
-    console.log(`📊 [DEBUG] Executing GraphQL query...`);
-    console.log(`🔧 [DEBUG] GraphQL client:`, this.client.graphQLClient);
-    console.log(`🔧 [DEBUG] Query:`, query);
-    console.log(`🔧 [DEBUG] Variables:`, { id: config.shopifyCollectionId });
-    
     // Try raw GraphQL request format for Buy SDK
     const response = await this.client.graphQLClient.send(query, { 
       id: config.shopifyCollectionId 
     });
 
-    console.log(`📊 [DEBUG] GraphQL response:`, response);
-
     if (response.data && response.data.collection) {
       const collection = response.data.collection;
       const products = collection.products.edges.map((edge: any) => edge.node);
       
-      console.log(`✅ [DEBUG] Found ${products.length} products in collection "${collection.title}"`);
-      
       return products.map((product: any) => this.transformGraphQLProduct(product, config));
     } else {
-      console.log(`❌ [DEBUG] Collection not found or has no products`);
       return [];
     }
   }

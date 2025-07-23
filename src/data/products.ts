@@ -50,32 +50,18 @@ export const nativeProducts: Product[] = [
 
 // Function to get all products (native + dynamically fetched Shopify products)
 export const getAllProducts = async (): Promise<Product[]> => {
-  console.log('🔄 [DEBUG] getAllProducts called');
-  
   try {
     // Dynamic import to avoid circular dependency
     const { shopifyProductManager } = await import('../lib/shopifyProductManager');
     const { shopifyProductConfigs, shopifyCollectionConfigs } = await import('../config/shopify');
     
-    console.log('📦 [DEBUG] Fetching Shopify products...', { 
-      count: shopifyProductConfigs.length,
-      configs: shopifyProductConfigs.map(c => ({ id: c.id, productId: c.shopifyProductId }))
-    });
-    
     // Fetch individual Shopify products
     const shopifyProducts = await Promise.all(
       shopifyProductConfigs.map(async (config) => {
         try {
-          console.log(`🛒 [DEBUG] Processing config: ${config.id}`);
-          const result = await shopifyProductManager.fetchProductData(config);
-          console.log(`✅ [DEBUG] Got result for ${config.id}:`, {
-            name: result.name,
-            price: result.price,
-            isDefault: result.name === 'Premium Cat Tower' // Check if it's still fallback
-          });
-          return result;
+          return await shopifyProductManager.fetchProductData(config);
         } catch (error) {
-          console.error(`❌ [DEBUG] Failed to fetch individual product: ${config.id}`, error);
+          console.error(`❌ Failed to fetch individual product: ${config.id}`, error);
           // Return fallback for this specific product
           return shopifyProductManager.createFallbackProduct(config);
         }
@@ -83,21 +69,12 @@ export const getAllProducts = async (): Promise<Product[]> => {
     );
 
     // Fetch Shopify collection products
-    console.log('📂 [DEBUG] Fetching Shopify collection products...', { 
-      count: shopifyCollectionConfigs.length,
-      configs: shopifyCollectionConfigs.map(c => ({ id: c.id, collectionId: c.shopifyCollectionId })),
-      envVar: process.env.NEXT_PUBLIC_SHOPIFY_COLLECTION_ID_1
-    });
-
     const collectionProducts = await Promise.all(
       shopifyCollectionConfigs.map(async (config) => {
         try {
-          console.log(`📂 [DEBUG] Processing collection config: ${config.id}`);
-          const products = await shopifyProductManager.fetchCollectionProducts(config);
-          console.log(`✅ [DEBUG] Got ${products.length} products from collection ${config.id}`);
-          return products;
+          return await shopifyProductManager.fetchCollectionProducts(config);
         } catch (error) {
-          console.error(`❌ [DEBUG] Failed to fetch collection: ${config.id}`, error);
+          console.error(`❌ Failed to fetch collection: ${config.id}`, error);
           return [];
         }
       })
@@ -106,20 +83,10 @@ export const getAllProducts = async (): Promise<Product[]> => {
     // Flatten collection products
     const flatCollectionProducts = collectionProducts.flat();
     
-    console.log('✅ [DEBUG] All products loaded:', { 
-      native: nativeProducts.length, 
-      shopify: shopifyProducts.length, 
-      collections: flatCollectionProducts.length,
-      shopifyDetails: shopifyProducts.map(p => ({ name: p.name, price: p.price, type: p.type }))
-    });
-    
     // Combine all products (native + individual Shopify + collection products)
     return [...nativeProducts, ...shopifyProducts, ...flatCollectionProducts];
   } catch (error) {
-    console.error('❌ [DEBUG] Failed to load Shopify products, using native only:', error);
+    console.error('❌ Failed to load Shopify products, using native only:', error);
     return nativeProducts;
   }
 };
-
-// For static export compatibility, provide native products as default
-export const products = nativeProducts;
