@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 type Product = {
   id: string;
@@ -15,7 +15,32 @@ type Product = {
 
 export default function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageLoad = () => {
+    setImageStatus('loaded');
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageStatus('error');
+    setImageLoaded(true);
+  };
+
+  // Preload image to avoid loading state
+  useEffect(() => {
+    const img = new Image();
+    img.onload = handleImageLoad;
+    img.onerror = handleImageError;
+    img.src = `/${product.image}`;
+    
+    // Cleanup
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [product.image]);
 
   return (
     <div 
@@ -24,21 +49,39 @@ export default function ProductCard({ product }: { product: Product }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container */}
-      <div className="relative overflow-hidden bg-gray-100 aspect-[4/3]">
-        <img
-          src={product.image}
-          alt={product.name}
-          className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-105 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setImageLoaded(true)}
-          loading="lazy"
-        />
-        
-        {/* Image overlay with loading state */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-            <div className="w-12 h-12 border-2 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+      <div className="relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 h-64">
+        {/* Display image with proper loading state */}
+        {imageStatus === 'loaded' && (
+          <img
+            src={`/${product.image}`}
+            alt={product.name}
+            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+          />
+        )}
+
+        {/* Loading spinner - shows while image is loading */}
+        {imageStatus === 'loading' && (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
+          </div>
+        )}
+
+        {/* Elegant placeholder - shows only when image fails to load */}
+        {imageStatus === 'error' && (
+          <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 text-orange-800">
+            <div className="text-center p-8">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-200 flex items-center justify-center">
+                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="font-['Playfair_Display'] text-lg font-medium mb-1">
+                {product.name}
+              </div>
+              <div className="text-sm opacity-75">
+                Premium Cat Furniture
+              </div>
+            </div>
           </div>
         )}
 
