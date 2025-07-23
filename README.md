@@ -40,7 +40,19 @@ npm --version
    npm install
    ```
 
-3. **Verify the installation**
+3. **Set up environment variables**
+   Copy the environment example file:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   
+   Then edit `.env.local` with your Shopify credentials:
+   ```bash
+   NEXT_PUBLIC_SHOPIFY_DOMAIN=your-shop-name.myshopify.com
+   NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=your-storefront-access-token
+   ```
+
+4. **Verify the installation**
    ```bash
    npm run build
    ```
@@ -96,6 +108,35 @@ thecatmanor/
 ├── tailwind.config.js     # Tailwind CSS configuration
 ├── tsconfig.json          # TypeScript configuration
 └── package.json           # Dependencies and scripts
+```
+
+## 🛒 Shopify Integration
+
+This project includes Shopify Buy Button integration for e-commerce functionality.
+
+### Setup Shopify Integration
+
+1. **Create a Shopify Store** or use an existing one
+2. **Enable Storefront API**: 
+   - Go to Apps → Manage private apps → Create private app
+   - Enable Storefront API access
+   - Copy your Storefront access token
+
+3. **Get Product IDs**:
+   - In Shopify Admin, go to Products
+   - Open a product and copy the ID from the URL
+   - Format as: `gid://shopify/Product/PRODUCT_ID`
+
+4. **Update Product Data**:
+   - Edit `src/data/products.ts`
+   - Add `shopifyProductId` and `shopifyVariantId` to each product
+
+### Environment Variables
+
+Create a `.env.local` file with:
+```bash
+NEXT_PUBLIC_SHOPIFY_DOMAIN=your-shop-name.myshopify.com
+NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=your-storefront-access-token
 ```
 
 ## 🎨 Design System

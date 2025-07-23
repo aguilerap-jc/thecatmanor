@@ -1,16 +1,44 @@
 "use client";
 
 import React from "react";
-import { products } from "@/data/products";
+import { nativeProducts, getAllProducts } from "@/data/products";
+import { Product, isShopifyProduct } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductsPage() {
-  const collections = ["All", "Signature", "Essential", "Eco"];
+  const collections = ["All", "Signature", "Essential", "Eco", "Shopify"];
   const [selectedCollection, setSelectedCollection] = React.useState("All");
+  const [products, setProducts] = React.useState<Product[]>(nativeProducts);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const filteredProducts = selectedCollection === "All" 
-    ? products 
-    : products.filter(product => product.collection === selectedCollection);
+  // Load all products (native + Shopify) on component mount
+  React.useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const allProducts = await getAllProducts();
+        setProducts(allProducts);
+      } catch (err) {
+        setError('Failed to load some products');
+        console.error('Error loading products:', err);
+        // Fallback to native products only
+        setProducts(nativeProducts);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const filteredProducts = products.filter(product => {
+    if (selectedCollection === "All") return true;
+    if (selectedCollection === "Shopify") return isShopifyProduct(product);
+    return product.collection === selectedCollection;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,17 +83,30 @@ export default function ProductsPage() {
       {/* Products Grid */}
       <section className="py-16 md:py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-            {filteredProducts.map((product, index) => (
-              <div 
-                key={product.id} 
-                className="opacity-0 animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center items-center py-16">
+              <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+              <span className="ml-3 text-gray-600">Loading products...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+              {filteredProducts.map((product, index) => (
+                <div 
+                  key={product.id} 
+                  className="opacity-0 animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+              
+              {filteredProducts.length === 0 && !loading && (
+                <div className="col-span-full text-center py-16">
+                  <p className="text-gray-500 text-lg">No products found in the {selectedCollection} collection.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 

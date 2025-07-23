@@ -1,17 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-
-type Product = {
-  id: string;
-  name: string;
-  price: string;
-  image: string;
-  description: string;
-  collection?: string;
-  materials?: string[];
-  dimensions?: string;
-};
+import { Product, isShopifyProduct, isNativeProduct } from "../types/product";
+import ShopifyBuyButton from "./ShopifyBuyButton";
 
 export default function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -33,7 +24,10 @@ export default function ProductCard({ product }: { product: Product }) {
     const img = new Image();
     img.onload = handleImageLoad;
     img.onerror = handleImageError;
-    img.src = `/${product.image}`;
+    
+    // Use the image URL as-is if it's an external URL (starts with http), otherwise prefix with /
+    const imageSrc = product.image.startsWith('http') ? product.image : `/${product.image}`;
+    img.src = imageSrc;
     
     // Cleanup
     return () => {
@@ -53,7 +47,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Display image with proper loading state */}
         {imageStatus === 'loaded' && (
           <img
-            src={`/${product.image}`}
+            src={product.image.startsWith('http') ? product.image : `/${product.image}`}
             alt={product.name}
             className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
           />
@@ -161,11 +155,28 @@ export default function ProductCard({ product }: { product: Product }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </button>
-            
-            <button className="px-8 py-3 bg-gray-900 text-white font-medium tracking-wide uppercase text-xs transition-all duration-300 hover:bg-gray-700 hover:shadow-lg">
-              Configure
-            </button>
           </div>
+        </div>
+
+        {/* Action Button - Dynamic based on product type */}
+        <div className="mt-4">
+          {isShopifyProduct(product) ? (
+            <ShopifyBuyButton
+              productId={product.shopifyProductId}
+              variantId={product.shopifyVariantId}
+              productTitle={product.name}
+              price={product.price}
+              className="w-full"
+            />
+          ) : isNativeProduct(product) ? (
+            <button className="w-full px-8 py-3 bg-gray-900 text-white font-medium tracking-wide uppercase text-xs transition-all duration-300 hover:bg-gray-700 hover:shadow-lg">
+              Learn More
+            </button>
+          ) : (
+            <button className="w-full px-8 py-3 bg-gray-400 text-white font-medium tracking-wide uppercase text-xs cursor-not-allowed">
+              Unavailable
+            </button>
+          )}
         </div>
       </div>
     </div>
