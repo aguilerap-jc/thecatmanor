@@ -11,26 +11,34 @@ Your Dependabot configuration has been optimized for projects with **low develop
 - **Day**: First Monday of each month at 9:00 AM
 - **Rationale**: Reduces noise while ensuring regular security updates
 
-### 🎯 Selective Updates Only
+### 🎯 Selective Updates Using Ignore Strategy
+
+**Configuration Approach**: Uses `ignore` to filter out unwanted updates (inverse logic from deprecated `allow` syntax)
+
+**Schema Compliance**: Updated to use current Dependabot v2 schema after fixing validation errors
 
 #### NPM Dependencies
 ```yaml
-allow:
-  - dependency-type: "direct" 
-    update-type: "security"        # 🔒 Security patches (immediate)
-  - dependency-type: "indirect"
-    update-type: "security"        # 🔒 Transitive security patches  
-  - dependency-type: "direct"
-    update-type: "version-update:semver-major"  # 🚀 Major version updates
+ignore:
+  - dependency-name: "*"
+    update-types: 
+      - "version-update:semver-patch"    # � Skip patch updates (1.2.3 → 1.2.4)
+      - "version-update:semver-minor"    # � Skip minor updates (1.2.0 → 1.3.0)
+# This allows:
+# ✅ Security updates (immediate, any time)
+# ✅ Major version updates (1.0.0 → 2.0.0)
 ```
 
 #### GitHub Actions
 ```yaml
-allow:
-  - dependency-type: "direct"
-    update-type: "security"        # 🔒 Security patches only
-  - dependency-type: "direct" 
-    update-type: "version-update:semver-major"  # 🚀 Major version updates
+ignore:
+  - dependency-name: "*"
+    update-types: 
+      - "version-update:semver-patch"    # � Skip patch updates
+      - "version-update:semver-minor"    # � Skip minor updates
+# This allows:
+# ✅ Security updates (immediate)
+# ✅ Major version updates (v1 → v2)
 ```
 
 ## What This Means
@@ -92,13 +100,14 @@ schedule:
 
 ### If you want security-only updates:
 ```yaml
-allow:
-  - dependency-type: "direct"
-    update-type: "security"
-  - dependency-type: "indirect" 
-    update-type: "security"
+ignore:
+  - dependency-name: "*"
+    update-types: 
+      - "version-update:semver-patch"
+      - "version-update:semver-minor"
+      - "version-update:semver-major"
 ```
-*Remove major version updates, security only*
+*This allows only security updates, blocks all version updates*
 
 ### If you want to pause Dependabot temporarily:
 ```yaml
@@ -140,6 +149,45 @@ GitHub will still notify you of security advisories regardless of Dependabot sch
 - Dependencies are stable/mature
 - Want minimal interruptions
 
+## Configuration Fix Applied
+
+### ❌ **Previous Broken Configuration**
+```yaml
+# This syntax is deprecated and caused validation errors:
+allow:
+  - dependency-type: "direct"
+    update-type: "security"          # ❌ update-type not allowed
+  - dependency-type: "indirect"
+    update-type: "security"          # ❌ update-type not allowed
+  - dependency-type: "direct"
+    update-type: "version-update:semver-major"  # ❌ update-type not allowed
+```
+
+### ✅ **Current Working Configuration**
+```yaml
+# New schema-compliant approach:
+ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch", "version-update:semver-minor"]
+```
+
+**Key Changes Made:**
+1. **Removed deprecated `allow` syntax** with `update-type` properties
+2. **Switched to `ignore` approach** - more reliable and schema-compliant
+3. **Maintained same behavior** - security + major updates only
+4. **Fixed validation errors** - configuration now passes GitHub's schema validation
+
+### Expected Behavior
+```yaml
+Monthly Schedule:
+├── Check for security updates → Create PRs immediately
+├── Check for major updates → Create PRs if available  
+├── Ignore minor updates (1.2.0 → 1.3.0)
+└── Ignore patch updates (1.2.3 → 1.2.4)
+```
+
 ---
 
 **Current Setting: Perfect for low-activity projects that prioritize security over staying bleeding-edge** 🎯
+
+**✅ Configuration is now schema-compliant and validated by GitHub!**
