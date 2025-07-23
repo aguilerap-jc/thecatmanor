@@ -8,6 +8,13 @@ export interface ShopifyProductConfig {
   fallbackData?: Partial<ShopifyProductData>;
 }
 
+export interface ShopifyCollectionConfig {
+  id: string;
+  shopifyCollectionId: string;
+  shopifyHandle?: string;
+  maxProducts?: number; // Limit number of products to fetch from collection
+}
+
 // Single reusable fallback data for when Shopify is unavailable
 const defaultFallbackData = {
   name: "Premium Cat Furniture", 
@@ -43,5 +50,23 @@ export const shopifyProductConfigs: ShopifyProductConfig[] = [
   //   shopifyVariantId: process.env.NEXT_PUBLIC_SHOPIFY_VARIANT_ID_3 || "gid://shopify/ProductVariant/example-variant-id-3",
   //   shopifyHandle: "cat-tree-cat-tower-for-indoor",
   //   fallbackData: defaultFallbackData
+  // }
+];
+
+// Shopify collection configurations
+export const shopifyCollectionConfigs: ShopifyCollectionConfig[] = [
+  {
+    id: "shopify-main-collection",
+    shopifyCollectionId: process.env.NEXT_PUBLIC_SHOPIFY_COLLECTION_ID_1 || "gid://shopify/Collection/example-collection-id",
+    shopifyHandle: "cat-furniture", // Optional: collection handle for URL-based fetching
+    maxProducts: 10 // Limit to 10 products from this collection
+  }
+  
+  // Add more collections:
+  // {
+  //   id: "shopify-premium-collection",
+  //   shopifyCollectionId: process.env.NEXT_PUBLIC_SHOPIFY_COLLECTION_ID_2 || "gid://shopify/Collection/example-collection-id-2",
+  //   shopifyHandle: "premium-cat-furniture",
+  //   maxProducts: 5
   // }
 ];
