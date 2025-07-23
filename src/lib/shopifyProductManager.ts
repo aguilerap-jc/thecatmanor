@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Client from 'shopify-buy';
 import { ShopifyProductData } from '../types/product';
@@ -18,18 +18,33 @@ class ShopifyProductManager {
   private initializeClient() {
     try {
       const domain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'your-store.myshopify.com';
-      const token = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token';
-      
+      const token =
+        process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token';
+
+      // Check if we're in a CI environment or using dummy values
+      const isDummyData =
+        domain.includes('dummy-store') ||
+        token.includes('dummy-token') ||
+        domain === 'your-store.myshopify.com' ||
+        token === 'your-storefront-access-token';
+
+      if (isDummyData) {
+        // In CI or development without real credentials, don't initialize client
+        console.warn('Using dummy Shopify credentials - client will not be initialized');
+        this.client = null;
+        return;
+      }
+
       if (!domain || !token) {
         throw new Error('Missing Shopify domain or access token');
       }
-      
+
       this.client = Client.buildClient({
         domain,
         storefrontAccessToken: token,
-        apiVersion: '2023-01' // Using older stable version for better compatibility
+        apiVersion: '2023-01', // Using older stable version for better compatibility
       });
-      
+
       // Test the connection with a simple query
       if (typeof window !== 'undefined') {
         this.testConnection();
@@ -42,14 +57,14 @@ class ShopifyProductManager {
 
   private async testConnection() {
     if (!this.client) return;
-    
+
     try {
       // Try to fetch shop info to test the connection
       const shop = await this.client.shop.fetchInfo();
     } catch (testError) {
       // Shop info test failed, continue anyway
     }
-    
+
     // Always try to fetch available products to see what exists
     try {
       const products = await this.client.product.fetchAll(5); // Fetch up to 5 products
@@ -77,7 +92,7 @@ class ShopifyProductManager {
     try {
       // Try different methods to fetch the product
       let shopifyProduct;
-      
+
       // Method 1: Try using the product handle first (most reliable)
       if (config.shopifyHandle) {
         try {
@@ -87,31 +102,31 @@ class ShopifyProductManager {
           // Handle fetch failed, continue to next method
         }
       }
-      
+
       // Method 2: Try numeric ID if handle method failed
       if (!shopifyProduct) {
         // Extract numeric ID from GID format (Buy SDK typically expects numeric ID)
         let productIdToFetch: string;
-        
+
         if (config.shopifyProductId.startsWith('gid://shopify/Product/')) {
           productIdToFetch = config.shopifyProductId.replace('gid://shopify/Product/', '');
         } else {
           productIdToFetch = config.shopifyProductId;
         }
-        
+
         // Validate the ID is numeric
         if (!/^\d+$/.test(productIdToFetch)) {
           throw new Error(`Invalid product ID format: ${productIdToFetch}. Expected numeric ID.`);
         }
-        
+
         shopifyProduct = await this.client.product.fetch(productIdToFetch);
       }
-      
+
       const transformedProduct = this.transformShopifyProduct(shopifyProduct, config);
-      
+
       // Cache the result
       this.cache.set(config.shopifyProductId, transformedProduct);
-      
+
       return transformedProduct;
     } catch (error) {
       // Error fetching Shopify product, fall back to default
@@ -119,13 +134,16 @@ class ShopifyProductManager {
     }
   }
 
-  private transformShopifyProduct(shopifyProduct: any, config: ShopifyProductConfig): ShopifyProductData {
+  private transformShopifyProduct(
+    shopifyProduct: any,
+    config: ShopifyProductConfig
+  ): ShopifyProductData {
     const mainVariant = shopifyProduct.variants[0];
     const mainImage = shopifyProduct.images[0];
 
     // Extract materials from product tags or description
     const materials = this.extractMaterials(shopifyProduct);
-    
+
     // Extract dimensions from product description or variant title
     const dimensions = this.extractDimensions(shopifyProduct);
 
@@ -134,7 +152,7 @@ class ShopifyProductManager {
 
     // Fix image URL if it has protocol issues
     let imageUrl = mainImage?.src || config.fallbackData?.image || '/images/placeholder.jpg';
-    
+
     if (typeof imageUrl === 'string') {
       // Fix common protocol issues
       if (imageUrl.startsWith('https:/') && !imageUrl.startsWith('https://')) {
@@ -159,21 +177,24 @@ class ShopifyProductManager {
       shopifyProductId: config.shopifyProductId,
       // Always store numeric variant ID for Buy SDK compatibility
       shopifyVariantId: this.extractNumericId(config.shopifyVariantId || mainVariant?.id),
-      shopifyHandle: config.shopifyHandle || shopifyProduct.handle
+      shopifyHandle: config.shopifyHandle || shopifyProduct.handle,
     };
   }
 
   private extractMaterials(shopifyProduct: any): string[] {
     const materials: string[] = [];
-    
+
     // Check if tags exist before accessing them
     if (shopifyProduct.tags && Array.isArray(shopifyProduct.tags)) {
       // Look for material-related tags
       shopifyProduct.tags.forEach((tag: string) => {
         if (tag.toLowerCase().includes('material:')) {
           materials.push(tag.replace(/material:/i, '').trim());
-        } else if (['wood', 'oak', 'bamboo', 'steel', 'fabric', 'wool', 'cotton', 'linen'].some(material => 
-          tag.toLowerCase().includes(material))) {
+        } else if (
+          ['wood', 'oak', 'bamboo', 'steel', 'fabric', 'wool', 'cotton', 'linen'].some(material =>
+            tag.toLowerCase().includes(material)
+          )
+        ) {
           materials.push(tag);
         }
       });
@@ -186,7 +207,7 @@ class ShopifyProductManager {
     // Look for dimensions in description
     const description = shopifyProduct.description || '';
     const dimensionMatch = description.match(/(\d+["']?\s*[×x]\s*\d+["']?\s*[×x]\s*\d+["']?)/i);
-    
+
     if (dimensionMatch) {
       return dimensionMatch[1];
     }
@@ -205,9 +226,10 @@ class ShopifyProductManager {
   private extractCollection(shopifyProduct: any): string | undefined {
     // Look for collection-related tags
     if (shopifyProduct.tags && Array.isArray(shopifyProduct.tags)) {
-      const collectionTag = shopifyProduct.tags.find((tag: string) => 
-        tag.toLowerCase().includes('collection:') || 
-        ['signature', 'essential', 'eco', 'premium', 'luxury'].includes(tag.toLowerCase())
+      const collectionTag = shopifyProduct.tags.find(
+        (tag: string) =>
+          tag.toLowerCase().includes('collection:') ||
+          ['signature', 'essential', 'eco', 'premium', 'luxury'].includes(tag.toLowerCase())
       );
 
       if (collectionTag) {
@@ -225,15 +247,15 @@ class ShopifyProductManager {
 
   private extractNumericId(id: string | undefined): string | undefined {
     if (!id) return undefined;
-    
+
     // If it's already numeric, return as-is
     if (/^\d+$/.test(id)) return id;
-    
+
     // If it's in GID format, extract the numeric part
     if (id.startsWith('gid://shopify/')) {
       return id.replace(/gid:\/\/shopify\/(Product|ProductVariant)\//, '');
     }
-    
+
     return id;
   }
 
@@ -250,7 +272,7 @@ class ShopifyProductManager {
       type: 'shopify' as const,
       shopifyProductId: config.shopifyProductId,
       shopifyVariantId: config.shopifyVariantId,
-      shopifyHandle: config.shopifyHandle
+      shopifyHandle: config.shopifyHandle,
     };
   }
 
@@ -286,37 +308,42 @@ class ShopifyProductManager {
       } catch (graphQLError) {
         // GraphQL approach failed, use alternative method
       }
-      
+
       // Alternative approach: Fetch all products and check their collections
       const allProducts = await this.client.product.fetchAll(50); // Fetch more products to search through
-      
+
       // Extract collection ID for comparison
-      const targetCollectionId = config.shopifyCollectionId.replace('gid://shopify/Collection/', '');
-      
+      const targetCollectionId = config.shopifyCollectionId.replace(
+        'gid://shopify/Collection/',
+        ''
+      );
+
       // Since Shopify Buy SDK doesn't include collection information in products,
       // we'll use a workaround: return first few products as "collection" products for demo
-      const demoCollectionProducts = allProducts.slice(0, config.maxProducts || 2).map((product: any, index: number) => {
-        // Create a temporary config for each product
-        const tempConfig: ShopifyProductConfig = {
-          id: `${config.id}-product-${index}`,
-          shopifyProductId: product.id,
-          shopifyHandle: product.handle,
-          fallbackData: {
-            name: "Premium Cat Furniture",
-            price: "Price unavailable",
-            image: "images/products/placeholder.webp",
-            description: "Product information is currently unavailable.",
-            collection: "Cat Furniture Collection"
-          }
-        };
+      const demoCollectionProducts = allProducts
+        .slice(0, config.maxProducts || 2)
+        .map((product: any, index: number) => {
+          // Create a temporary config for each product
+          const tempConfig: ShopifyProductConfig = {
+            id: `${config.id}-product-${index}`,
+            shopifyProductId: product.id,
+            shopifyHandle: product.handle,
+            fallbackData: {
+              name: 'Premium Cat Furniture',
+              price: 'Price unavailable',
+              image: 'images/products/placeholder.webp',
+              description: 'Product information is currently unavailable.',
+              collection: 'Cat Furniture Collection',
+            },
+          };
 
-        const transformedProduct = this.transformShopifyProduct(product, tempConfig);
-        return transformedProduct;
-      });
-      
+          const transformedProduct = this.transformShopifyProduct(product, tempConfig);
+          return transformedProduct;
+        });
+
       // Cache the result
       this.collectionCache.set(config.shopifyCollectionId, demoCollectionProducts);
-      
+
       return demoCollectionProducts;
     } catch (error) {
       // Error fetching collection, return empty array
@@ -327,7 +354,9 @@ class ShopifyProductManager {
   /**
    * Fetch collection products using GraphQL (more powerful than REST API)
    */
-  private async fetchCollectionWithGraphQL(config: ShopifyCollectionConfig): Promise<ShopifyProductData[]> {
+  private async fetchCollectionWithGraphQL(
+    config: ShopifyCollectionConfig
+  ): Promise<ShopifyProductData[]> {
     const query = `
       query getCollection($id: ID!) {
         collection(id: $id) {
@@ -370,14 +399,14 @@ class ShopifyProductManager {
     `;
 
     // Try raw GraphQL request format for Buy SDK
-    const response = await this.client.graphQLClient.send(query, { 
-      id: config.shopifyCollectionId 
+    const response = await this.client.graphQLClient.send(query, {
+      id: config.shopifyCollectionId,
     });
 
     if (response.data && response.data.collection) {
       const collection = response.data.collection;
       const products = collection.products.edges.map((edge: any) => edge.node);
-      
+
       return products.map((product: any) => this.transformGraphQLProduct(product, config));
     } else {
       return [];
@@ -387,10 +416,13 @@ class ShopifyProductManager {
   /**
    * Transform GraphQL product data to our ShopifyProductData format
    */
-  private transformGraphQLProduct(product: any, config: ShopifyCollectionConfig): ShopifyProductData {
+  private transformGraphQLProduct(
+    product: any,
+    config: ShopifyCollectionConfig
+  ): ShopifyProductData {
     const variant = product.variants.edges[0]?.node;
     const image = product.images.edges[0]?.node;
-    
+
     return {
       id: `${config.id}-${product.handle}`,
       name: product.title,
@@ -400,7 +432,7 @@ class ShopifyProductManager {
       type: 'shopify',
       shopifyProductId: product.id,
       shopifyVariantId: variant?.id || '',
-      shopifyHandle: product.handle
+      shopifyHandle: product.handle,
     };
   }
 }

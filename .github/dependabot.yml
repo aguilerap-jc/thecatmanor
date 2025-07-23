@@ -1,0 +1,38 @@
+version: 2
+updates:
+  # Enable version updates for npm (monthly for low-activity projects)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "@aguilerap-jc"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    # Only update if there are security vulnerabilities or major versions
+    allow:
+      - dependency-type: "direct"
+        update-type: "security"
+      - dependency-type: "indirect"
+        update-type: "security"
+      - dependency-type: "direct"
+        update-type: "version-update:semver-major"
+    
+  # Enable version updates for GitHub Actions (quarterly for stability)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday" 
+      time: "09:00"
+    open-pull-requests-limit: 1
+    # Only update for security or major versions
+    allow:
+      - dependency-type: "direct"
+        update-type: "security"
+      - dependency-type: "direct"
+        update-type: "version-update:semver-major"

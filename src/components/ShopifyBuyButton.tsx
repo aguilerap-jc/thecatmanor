@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import Client from 'shopify-buy';
@@ -11,12 +11,12 @@ interface ShopifyBuyButtonProps {
   className?: string;
 }
 
-export default function ShopifyBuyButton({ 
-  productId, 
-  variantId, 
-  productTitle, 
-  price, 
-  className = "" 
+export default function ShopifyBuyButton({
+  productId,
+  variantId,
+  productTitle,
+  price,
+  className = '',
 }: ShopifyBuyButtonProps) {
   const [client, setClient] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,12 +26,13 @@ export default function ShopifyBuyButton({
     // Initialize Shopify client
     const shopifyClient = Client.buildClient({
       domain: process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'your-store.myshopify.com',
-      storefrontAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token',
-      apiVersion: '2024-01'
+      storefrontAccessToken:
+        process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token',
+      apiVersion: '2024-01',
     });
-    
+
     setClient(shopifyClient);
-    
+
     // Create checkout
     shopifyClient.checkout.create().then((checkout: any) => {
       setCheckout(checkout);
@@ -40,18 +41,20 @@ export default function ShopifyBuyButton({
 
   const addToCart = async () => {
     if (!client || !checkout) return;
-    
+
     setIsLoading(true);
-    
+
     try {
-      const lineItemsToAdd = [{
-        variantId: variantId || productId,
-        quantity: 1
-      }];
+      const lineItemsToAdd = [
+        {
+          variantId: variantId || productId,
+          quantity: 1,
+        },
+      ];
 
       const updatedCheckout = await client.checkout.addLineItems(checkout.id, lineItemsToAdd);
       setCheckout(updatedCheckout);
-      
+
       // Redirect to Shopify checkout
       window.open(updatedCheckout.webUrl, '_blank');
     } catch (error) {
@@ -78,9 +81,7 @@ export default function ShopifyBuyButton({
           Adding...
         </>
       ) : (
-        <>
-          Add to Cart • {price}
-        </>
+        <>Add to Cart • {price}</>
       )}
     </button>
   );

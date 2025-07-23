@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Product, isShopifyProduct, isNativeProduct } from "../types/product";
-import ShopifyBuyButton from "./ShopifyBuyButton";
+import React, { useState, useEffect } from 'react';
+import { Product, isShopifyProduct, isNativeProduct } from '../types/product';
+import ShopifyBuyButton from './ShopifyBuyButton';
 
 export default function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -24,11 +24,11 @@ export default function ProductCard({ product }: { product: Product }) {
     const img = new Image();
     img.onload = handleImageLoad;
     img.onerror = handleImageError;
-    
+
     // Use the image URL as-is if it's an external URL (starts with http), otherwise prefix with /
     const imageSrc = product.image.startsWith('http') ? product.image : `/${product.image}`;
     img.src = imageSrc;
-    
+
     // Cleanup
     return () => {
       img.onload = null;
@@ -37,7 +37,7 @@ export default function ProductCard({ product }: { product: Product }) {
   }, [product.image]);
 
   return (
-    <div 
+    <div
       className="bg-white border border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-1 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -65,27 +65,39 @@ export default function ProductCard({ product }: { product: Product }) {
           <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 text-orange-800">
             <div className="text-center p-8">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-200 flex items-center justify-center">
-                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg
+                  className="w-8 h-8 text-orange-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
               <div className="font-['Playfair_Display'] text-lg font-medium mb-1">
                 {product.name}
               </div>
-              <div className="text-sm opacity-75">
-                Premium Cat Furniture
-              </div>
+              <div className="text-sm opacity-75">Premium Cat Furniture</div>
             </div>
           </div>
         )}
 
         {/* Quick view overlay */}
-        <div className={`absolute inset-0 bg-gray-900 bg-opacity-0 transition-all duration-300 flex items-center justify-center ${
-          isHovered ? 'bg-opacity-20' : ''
-        }`}>
-          <button className={`px-8 py-3 border-2 border-gray-900 text-gray-900 font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-gray-900 hover:text-white transform ${
-            isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-          }`}>
+        <div
+          className={`absolute inset-0 bg-gray-900 bg-opacity-0 transition-all duration-300 flex items-center justify-center ${
+            isHovered ? 'bg-opacity-20' : ''
+          }`}
+        >
+          <button
+            className={`px-8 py-3 border-2 border-gray-900 text-gray-900 font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-gray-900 hover:text-white transform ${
+              isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}
+          >
             Quick View
           </button>
         </div>
@@ -117,9 +129,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">
               Materials
             </p>
-            <p className="text-sm text-gray-700">
-              {product.materials.join(', ')}
-            </p>
+            <p className="text-sm text-gray-700">{product.materials.join(', ')}</p>
           </div>
         )}
 
@@ -129,9 +139,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">
               Dimensions
             </p>
-            <p className="text-sm text-gray-700">
-              {product.dimensions}
-            </p>
+            <p className="text-sm text-gray-700">{product.dimensions}</p>
           </div>
         )}
 
@@ -141,18 +149,21 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="font-['Playfair_Display'] text-2xl lg:text-3xl font-light text-gray-900">
               {product.price}
             </span>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">
-              Starting from
-            </p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide">Starting from</p>
           </div>
-          
+
           <div className="flex space-x-2">
-            <button 
+            <button
               className="p-2 text-gray-700 hover:text-orange-500 transition-colors duration-300"
               aria-label="Add to wishlist"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
               </svg>
             </button>
           </div>

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { nativeProducts, getAllProducts } from "@/data/products";
-import { Product, isShopifyProduct } from "@/types/product";
-import ProductCard from "@/components/ProductCard";
+import React from 'react';
+import { nativeProducts, getAllProducts } from '@/data/products';
+import { Product, isShopifyProduct } from '@/types/product';
+import ProductCard from '@/components/ProductCard';
 
 export default function ProductsPage() {
-  const collections = ["All", "Signature", "Essential", "Eco", "Shopify"];
-  const [selectedCollection, setSelectedCollection] = React.useState("All");
+  const collections = ['All', 'Signature', 'Essential', 'Eco', 'Shopify'];
+  const [selectedCollection, setSelectedCollection] = React.useState('All');
   const [products, setProducts] = React.useState<Product[]>(nativeProducts);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -17,7 +17,7 @@ export default function ProductsPage() {
     const loadProducts = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const allProducts = await getAllProducts();
         setProducts(allProducts);
@@ -35,8 +35,8 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = products.filter(product => {
-    if (selectedCollection === "All") return true;
-    if (selectedCollection === "Shopify") return isShopifyProduct(product);
+    if (selectedCollection === 'All') return true;
+    if (selectedCollection === 'Shopify') return isShopifyProduct(product);
     return product.collection === selectedCollection;
   });
 
@@ -52,9 +52,9 @@ export default function ProductsPage() {
             Modular Cat Furniture
           </h1>
           <p className="text-lg md:text-xl text-gray-600 font-light leading-relaxed max-w-3xl mx-auto">
-            Discover our curated collection of premium, modular cat furniture designed 
-            to integrate seamlessly with contemporary interiors while providing 
-            exceptional comfort for your feline companions.
+            Discover our curated collection of premium, modular cat furniture designed to integrate
+            seamlessly with contemporary interiors while providing exceptional comfort for your
+            feline companions.
           </p>
         </div>
       </section>
@@ -63,7 +63,7 @@ export default function ProductsPage() {
       <section className="py-8 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center gap-4">
-            {collections.map((collection) => (
+            {collections.map(collection => (
               <button
                 key={collection}
                 onClick={() => setSelectedCollection(collection)}
@@ -91,18 +91,20 @@ export default function ProductsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
               {filteredProducts.map((product, index) => (
-                <div 
-                  key={product.id} 
+                <div
+                  key={product.id}
                   className="opacity-0 animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <ProductCard product={product} />
                 </div>
               ))}
-              
+
               {filteredProducts.length === 0 && !loading && (
                 <div className="col-span-full text-center py-16">
-                  <p className="text-gray-500 text-lg">No products found in the {selectedCollection} collection.</p>
+                  <p className="text-gray-500 text-lg">
+                    No products found in the {selectedCollection} collection.
+                  </p>
                 </div>
               )}
             </div>
@@ -117,8 +119,8 @@ export default function ProductsPage() {
             Need Something Custom?
           </h2>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Our design team can create bespoke modular systems tailored to your 
-            space and your cats' specific needs. Every piece is crafted to order.
+            Our design team can create bespoke modular systems tailored to your space and your cats'
+            specific needs. Every piece is crafted to order.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="px-8 py-3 bg-orange-500 text-white font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-orange-600 hover:shadow-lg">

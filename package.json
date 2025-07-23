@@ -5,8 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:ci": "NEXT_PUBLIC_SHOPIFY_DOMAIN=dummy-store.myshopify.com NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=dummy-token-for-ci npm run build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "autoprefixer": "^10.4.21",
@@ -22,6 +27,10 @@
     "@types/node": "^20.19.8",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@types/shopify-buy": "^3.0.0"
+    "@types/shopify-buy": "^3.0.0",
+    "audit-ci": "^7.0.1",
+    "eslint": "9.31.0",
+    "eslint-config-next": "15.4.3",
+    "prettier": "^3.1.1"
   }
 }

@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
-import React from "react";
-import "../global.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import type { Metadata } from 'next';
+import React from 'react';
+import '../global.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: "The Cat Manor – Modern Cat Furniture",
-  description: "Beautiful, modern cat furniture for stylish apartments.",
+  title: 'The Cat Manor – Modern Cat Furniture',
+  description: 'Beautiful, modern cat furniture for stylish apartments.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
