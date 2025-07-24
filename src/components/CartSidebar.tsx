@@ -39,7 +39,12 @@ export default function CartSidebar() {
             aria-label="Close cart"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -49,12 +54,24 @@ export default function CartSidebar() {
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-6 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
                 </svg>
               </div>
               <h3 className="font-medium text-deep-charcoal mb-2">Your cart is empty</h3>
-              <p className="text-ash text-sm mb-4">Add some beautiful cat furniture to get started!</p>
+              <p className="text-ash text-sm mb-4">
+                Add some beautiful cat furniture to get started!
+              </p>
               <button
                 onClick={closeCart}
                 className="px-6 py-2 bg-terracotta text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors duration-200"
@@ -64,7 +81,7 @@ export default function CartSidebar() {
             </div>
           ) : (
             <div className="p-6 space-y-4">
-              {items.map((item) => (
+              {items.map(item => (
                 <CartItem
                   key={item.id}
                   item={item}
@@ -82,11 +99,11 @@ export default function CartSidebar() {
           <div className="border-t border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between">
               <span className="font-medium text-deep-charcoal">Subtotal:</span>
-              <span className="font-display text-xl font-medium text-deep-charcoal">{subtotal}</span>
+              <span className="font-display text-xl font-medium text-deep-charcoal">
+                {subtotal}
+              </span>
             </div>
-            <p className="text-sm text-ash">
-              Shipping and taxes calculated at checkout.
-            </p>
+            <p className="text-sm text-ash">Shipping and taxes calculated at checkout.</p>
             <button
               onClick={proceedToCheckout}
               disabled={isLoading}
@@ -132,15 +149,21 @@ function CartItem({ item, onRemove, onUpdateQuantity, isLoading }: CartItemProps
       {/* Product Image */}
       <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
         {item.image ? (
-          <img
-            src={item.image}
-            alt={item.title}
-            className="w-full h-full object-cover"
-          />
+          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-8 h-8 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
           </div>
         )}
@@ -148,9 +171,7 @@ function CartItem({ item, onRemove, onUpdateQuantity, isLoading }: CartItemProps
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-deep-charcoal text-sm leading-tight mb-1">
-          {item.title}
-        </h3>
+        <h3 className="font-medium text-deep-charcoal text-sm leading-tight mb-1">{item.title}</h3>
         {item.variant && item.variant.title !== 'Default Title' && (
           <p className="text-xs text-ash mb-2">{item.variant.title}</p>
         )}
@@ -167,16 +188,19 @@ function CartItem({ item, onRemove, onUpdateQuantity, isLoading }: CartItemProps
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
           </button>
-          <span className="min-w-[2rem] text-center text-sm font-medium">
-            {item.quantity}
-          </span>
+          <span className="min-w-[2rem] text-center text-sm font-medium">{item.quantity}</span>
           <button
             onClick={() => handleQuantityChange(item.quantity + 1)}
             disabled={isLoading}
             className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
             </svg>
           </button>
         </div>
@@ -190,7 +214,12 @@ function CartItem({ item, onRemove, onUpdateQuantity, isLoading }: CartItemProps
         aria-label="Remove item"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
         </svg>
       </button>
     </div>

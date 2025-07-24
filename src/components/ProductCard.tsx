@@ -8,7 +8,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [addingToCart, setAddingToCart] = useState(false);
-  
+
   const { addToCart, addNativeToCart } = useCart();
 
   const handleImageLoad = () => {
@@ -38,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const handleAddToCart = async () => {
     if (addingToCart) return;
-    
+
     setAddingToCart(true);
     try {
       if (isShopifyProduct(product)) {
@@ -96,7 +96,12 @@ export default function ProductCard({ product }: { product: Product }) {
         {imageStatus === 'error' && (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center text-gray-500">
             <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <span className="text-sm">Image unavailable</span>
           </div>
@@ -133,16 +138,14 @@ export default function ProductCard({ product }: { product: Product }) {
           <h3 className="font-display text-lg font-medium text-deep-charcoal leading-tight">
             {product.name}
           </h3>
-          <p className="text-ash text-sm mt-1 line-clamp-2">
-            {product.description}
-          </p>
+          <p className="text-ash text-sm mt-1 line-clamp-2">{product.description}</p>
         </div>
 
         <div className="flex items-center justify-between">
           <span className="font-display text-xl font-medium text-deep-charcoal">
             {product.price}
           </span>
-          
+
           {/* Quick add button for mobile/always visible */}
           <button
             onClick={handleAddToCart}

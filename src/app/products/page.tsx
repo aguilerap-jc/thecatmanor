@@ -35,14 +35,15 @@ export default function ProductsPage() {
   }, []);
 
   // Filter products based on selected collection
-  const filteredProducts = selectedCollection === 'All' 
-    ? products 
-    : products.filter(product => {
-      if (selectedCollection === 'Shopify') {
-        return isShopifyProduct(product);
-      }
-      return product.collection === selectedCollection;
-    });
+  const filteredProducts =
+    selectedCollection === 'All'
+      ? products
+      : products.filter(product => {
+          if (selectedCollection === 'Shopify') {
+            return isShopifyProduct(product);
+          }
+          return product.collection === selectedCollection;
+        });
 
   // Log errors for debugging (prevents unused variable warning)
   React.useEffect(() => {

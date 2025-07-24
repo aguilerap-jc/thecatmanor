@@ -26,7 +26,7 @@ export default function CartIcon() {
           d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
         />
       </svg>
-      
+
       {/* Item Count Badge */}
       {itemCount > 0 && (
         <span className="absolute -top-1 -right-1 bg-terracotta text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center animate-fade-in">

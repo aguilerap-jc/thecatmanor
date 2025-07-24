@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, useEffect, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 import Client from 'shopify-buy';
 
 // Types
@@ -110,10 +117,11 @@ export function CartProvider({ children }: CartProviderProps) {
 
     if (typeof window !== 'undefined') {
       const domain = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'your-store.myshopify.com';
-      const token = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token';
+      const token =
+        process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'your-storefront-access-token';
 
       // Check for dummy data
-      const isDummyData = 
+      const isDummyData =
         domain.includes('dummy-store') ||
         token.includes('dummy-token') ||
         domain === 'your-store.myshopify.com' ||
@@ -145,7 +153,7 @@ export function CartProvider({ children }: CartProviderProps) {
     try {
       // Try to restore existing checkout from localStorage
       const existingCheckoutId = localStorage.getItem('shopify_checkout_id');
-      
+
       if (existingCheckoutId) {
         try {
           const existingCheckout = await shopifyClient.checkout.fetch(existingCheckoutId);
@@ -189,7 +197,10 @@ export function CartProvider({ children }: CartProviderProps) {
     const allItems = [...currentNativeItems, ...shopifyItems];
 
     dispatch({ type: 'SET_ITEMS', payload: allItems });
-    dispatch({ type: 'UPDATE_SUBTOTAL', payload: `$${parseFloat(checkout.subtotalPrice.amount).toFixed(2)}` });
+    dispatch({
+      type: 'UPDATE_SUBTOTAL',
+      payload: `$${parseFloat(checkout.subtotalPrice.amount).toFixed(2)}`,
+    });
     dispatch({ type: 'UPDATE_ITEM_COUNT', payload: allItems.length });
   };
 
@@ -203,19 +214,21 @@ export function CartProvider({ children }: CartProviderProps) {
 
     try {
       // Convert raw variant ID to Global ID format if needed
-      const globalVariantId = variantId.startsWith('gid://') 
-        ? variantId 
+      const globalVariantId = variantId.startsWith('gid://')
+        ? variantId
         : `gid://shopify/ProductVariant/${variantId}`;
 
-      const lineItemsToAdd = [{
-        variantId: globalVariantId,
-        quantity: quantity,
-      }];
+      const lineItemsToAdd = [
+        {
+          variantId: globalVariantId,
+          quantity: quantity,
+        },
+      ];
 
       const updatedCheckout = await client.checkout.addLineItems(state.checkout.id, lineItemsToAdd);
       dispatch({ type: 'SET_CHECKOUT', payload: updatedCheckout });
       updateCartFromCheckout(updatedCheckout);
-      
+
       // Open cart sidebar to show added item
       dispatch({ type: 'OPEN_CART' });
     } catch (error) {
@@ -230,7 +243,7 @@ export function CartProvider({ children }: CartProviderProps) {
     // This is a simplified implementation - in a real app, you might want to merge this with Shopify cart
     const cartItem: CartItem = {
       ...item,
-      quantity
+      quantity,
     };
 
     // Add to existing items or update quantity if item already exists
@@ -246,7 +259,7 @@ export function CartProvider({ children }: CartProviderProps) {
 
     dispatch({ type: 'SET_ITEMS', payload: updatedItems });
     dispatch({ type: 'OPEN_CART' });
-    
+
     // Save to localStorage and update totals
     localStorage.setItem('native-cart', JSON.stringify(updatedItems));
     updateTotals(updatedItems);
@@ -257,14 +270,14 @@ export function CartProvider({ children }: CartProviderProps) {
     const nativeItems = items.filter(item => item.id.startsWith('native-'));
     const nativeTotal = nativeItems.reduce((total, item) => {
       const price = parseFloat(item.price.replace('$', ''));
-      return total + (price * item.quantity);
+      return total + price * item.quantity;
     }, 0);
 
     // For now, just update with native total (in a full implementation, you'd merge with Shopify total)
     if (nativeItems.length > 0 && !state.checkout?.lineItems?.length) {
       dispatch({ type: 'UPDATE_SUBTOTAL', payload: `$${nativeTotal.toFixed(2)}` });
     }
-    
+
     dispatch({ type: 'UPDATE_ITEM_COUNT', payload: items.length });
   };
 
@@ -285,7 +298,9 @@ export function CartProvider({ children }: CartProviderProps) {
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      const updatedCheckout = await client.checkout.removeLineItems(state.checkout.id, [lineItemId]);
+      const updatedCheckout = await client.checkout.removeLineItems(state.checkout.id, [
+        lineItemId,
+      ]);
       dispatch({ type: 'SET_CHECKOUT', payload: updatedCheckout });
       updateCartFromCheckout(updatedCheckout);
     } catch (error) {
@@ -299,7 +314,7 @@ export function CartProvider({ children }: CartProviderProps) {
     // Check if this is a native product ID
     if (lineItemId.startsWith('native-')) {
       // Handle native product quantity update
-      const updatedItems = state.items.map(item => 
+      const updatedItems = state.items.map(item =>
         item.id === lineItemId ? { ...item, quantity } : item
       );
       dispatch({ type: 'SET_ITEMS', payload: updatedItems });
@@ -314,12 +329,17 @@ export function CartProvider({ children }: CartProviderProps) {
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
-      const lineItemsToUpdate = [{
-        id: lineItemId,
-        quantity: quantity,
-      }];
+      const lineItemsToUpdate = [
+        {
+          id: lineItemId,
+          quantity: quantity,
+        },
+      ];
 
-      const updatedCheckout = await client.checkout.updateLineItems(state.checkout.id, lineItemsToUpdate);
+      const updatedCheckout = await client.checkout.updateLineItems(
+        state.checkout.id,
+        lineItemsToUpdate
+      );
       dispatch({ type: 'SET_CHECKOUT', payload: updatedCheckout });
       updateCartFromCheckout(updatedCheckout);
     } catch (error) {
@@ -371,11 +391,7 @@ export function CartProvider({ children }: CartProviderProps) {
     proceedToCheckout,
   };
 
-  return (
-    <CartContext.Provider value={contextValue}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;
 }
 
 // Hook to use cart context

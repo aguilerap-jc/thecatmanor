@@ -47,7 +47,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-4">
             {/* Cart Icon */}
             <CartIcon />
-            
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
