@@ -8,24 +8,26 @@ export default function ContactPage() {
     email: '',
     subject: '',
     message: '',
-    inquiryType: 'general'
+    inquiryType: 'general',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -35,7 +37,7 @@ export default function ContactPage() {
         email: '',
         subject: '',
         message: '',
-        inquiryType: 'general'
+        inquiryType: 'general',
       });
     } catch (error) {
       setSubmitStatus('error');
@@ -59,8 +61,8 @@ export default function ContactPage() {
               <span className="text-terracotta">Hear From You</span>
             </h1>
             <p className="text-lg md:text-xl text-ash font-light leading-relaxed max-w-3xl mx-auto">
-              Have questions about our modular cat furniture? Need design guidance? 
-              Our team is here to help you create the perfect living space for you and your feline companions.
+              Have questions about our modular cat furniture? Need design guidance? Our team is here
+              to help you create the perfect living space for you and your feline companions.
             </p>
           </div>
         </div>
@@ -70,20 +72,29 @@ export default function ContactPage() {
       <section className="py-16 md:py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-            
             {/* Contact Information */}
             <div className="lg:col-span-1">
               <div className="opacity-0 animate-slide-up">
                 <h2 className="font-display text-2xl md:text-3xl font-light text-deep-charcoal mb-8">
                   Contact Information
                 </h2>
-                
+
                 {/* Contact Methods */}
                 <div className="space-y-6 mb-8">
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-terracotta/10 rounded-full flex items-center justify-center">
-                      <svg className="w-6 h-6 text-terracotta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      <svg
+                        className="w-6 h-6 text-terracotta"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
                       </svg>
                     </div>
                     <div>
@@ -107,10 +118,22 @@ export default function ContactPage() {
                   {submitStatus === 'success' && (
                     <div className="mb-6 p-4 bg-sage/10 border border-sage/20 rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <svg className="w-5 h-5 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        <svg
+                          className="w-5 h-5 text-sage"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
                         </svg>
-                        <p className="text-sage font-medium">Thank you! Your message has been sent successfully.</p>
+                        <p className="text-sage font-medium">
+                          Thank you! Your message has been sent successfully.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -118,10 +141,22 @@ export default function ContactPage() {
                   {submitStatus === 'error' && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <svg
+                          className="w-5 h-5 text-red-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
-                        <p className="text-red-600 font-medium">There was an error sending your message. Please try again.</p>
+                        <p className="text-red-600 font-medium">
+                          There was an error sending your message. Please try again.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -130,7 +165,10 @@ export default function ContactPage() {
                     {/* Name and Email Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-deep-charcoal mb-2">
+                        <label
+                          htmlFor="name"
+                          className="block text-sm font-medium text-deep-charcoal mb-2"
+                        >
                           Name *
                         </label>
                         <input
@@ -145,7 +183,10 @@ export default function ContactPage() {
                         />
                       </div>
                       <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-deep-charcoal mb-2">
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-deep-charcoal mb-2"
+                        >
                           Email *
                         </label>
                         <input
@@ -163,7 +204,10 @@ export default function ContactPage() {
 
                     {/* Inquiry Type */}
                     <div>
-                      <label htmlFor="inquiryType" className="block text-sm font-medium text-deep-charcoal mb-2">
+                      <label
+                        htmlFor="inquiryType"
+                        className="block text-sm font-medium text-deep-charcoal mb-2"
+                      >
                         Inquiry Type
                       </label>
                       <select
@@ -184,7 +228,10 @@ export default function ContactPage() {
 
                     {/* Subject */}
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-deep-charcoal mb-2">
+                      <label
+                        htmlFor="subject"
+                        className="block text-sm font-medium text-deep-charcoal mb-2"
+                      >
                         Subject *
                       </label>
                       <input
@@ -201,7 +248,10 @@ export default function ContactPage() {
 
                     {/* Message */}
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-deep-charcoal mb-2">
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-deep-charcoal mb-2"
+                      >
                         Message *
                       </label>
                       <textarea
@@ -256,8 +306,9 @@ export default function ContactPage() {
                 What materials are used in your cat furniture?
               </h3>
               <p className="text-ash leading-relaxed">
-                We use sustainably sourced hardwoods including oak, walnut, and maple, paired with premium fabrics 
-                that are both durable and comfortable. All materials are non-toxic and safe for cats.
+                We use sustainably sourced hardwoods including oak, walnut, and maple, paired with
+                premium fabrics that are both durable and comfortable. All materials are non-toxic
+                and safe for cats.
               </p>
             </div>
 
@@ -266,18 +317,18 @@ export default function ContactPage() {
                 How does the modular system work?
               </h3>
               <p className="text-ash leading-relaxed">
-                Our modular pieces connect seamlessly using precision-engineered joints. You can mix, match, 
-                and reconfigure components to create custom layouts that grow with your needs and space.
+                Our modular pieces connect seamlessly using precision-engineered joints. You can
+                mix, match, and reconfigure components to create custom layouts that grow with your
+                needs and space.
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-soft">
-              <h3 className="font-medium text-deep-charcoal mb-3">
-                What is your return policy?
-              </h3>
+              <h3 className="font-medium text-deep-charcoal mb-3">What is your return policy?</h3>
               <p className="text-ash leading-relaxed">
-                We offer a 30-day return policy for unused items in original packaging. Custom pieces may have 
-                different return terms. Please contact us for specific details about your order.
+                We offer a 30-day return policy for unused items in original packaging. Custom
+                pieces may have different return terms. Please contact us for specific details about
+                your order.
               </p>
             </div>
 
@@ -286,18 +337,16 @@ export default function ContactPage() {
                 Do you offer international shipping?
               </h3>
               <p className="text-ash leading-relaxed">
-                Currently, we ship within the United States and Canada. We're working on expanding our shipping 
-                options to serve international customers in the future.
+                Currently, we ship within the United States and Canada. We're working on expanding
+                our shipping options to serve international customers in the future.
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-soft">
-              <h3 className="font-medium text-deep-charcoal mb-3">
-                How long does delivery take?
-              </h3>
+              <h3 className="font-medium text-deep-charcoal mb-3">How long does delivery take?</h3>
               <p className="text-ash leading-relaxed">
-                Standard delivery takes 7-14 business days. Custom pieces may require 3-4 weeks for crafting 
-                and delivery. We'll provide tracking information once your order ships.
+                Standard delivery takes 7-14 business days. Custom pieces may require 3-4 weeks for
+                crafting and delivery. We'll provide tracking information once your order ships.
               </p>
             </div>
           </div>
@@ -311,7 +360,8 @@ export default function ContactPage() {
             Stay Updated
           </h2>
           <p className="text-lg text-gray-300 mb-8">
-            Subscribe to our newsletter for design inspiration, new product releases, and exclusive offers.
+            Subscribe to our newsletter for design inspiration, new product releases, and exclusive
+            offers.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
