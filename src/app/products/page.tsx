@@ -3,7 +3,7 @@
 import React from 'react';
 import { nativeProducts, getAllProducts } from '@/data/products';
 import { Product, isShopifyProduct } from '@/types/product';
-import ProductCard from '@/components/EnhancedProductCard';
+import ProductCard from '@/components/ProductCard';
 
 export default function ProductsPage() {
   const collections = ['All', 'Signature', 'Essential', 'Eco', 'Shopify'];

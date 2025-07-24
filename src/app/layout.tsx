@@ -6,6 +6,8 @@ import { Analytics } from '@vercel/analytics/react';
 import '../global.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { CartProvider } from '@/contexts/CartContext';
+import CartSidebar from '@/components/CartSidebar';
 
 export const metadata: Metadata = {
   title: 'The Cat Manor – Modern Cat Furniture',
@@ -34,9 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
       </head>
       <body className="bg-snow text-charcoal min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <CartProvider>
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+          <CartSidebar />
+        </CartProvider>
         <SpeedInsights />
         <Analytics />
       </body>
