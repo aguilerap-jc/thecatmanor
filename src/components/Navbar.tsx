@@ -34,13 +34,6 @@ export default function Navbar() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
-              href="/design-service"
-              className="text-gray-700 hover:text-orange-500 font-medium tracking-wide uppercase text-sm transition-colors duration-300 relative group"
-            >
-              Design Service
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-            <Link
               href="/contact"
               className="text-gray-700 hover:text-orange-500 font-medium tracking-wide uppercase text-sm transition-colors duration-300 relative group"
             >
@@ -101,13 +94,6 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               About
-            </Link>
-            <Link
-              href="/design-service"
-              className="block text-gray-700 hover:text-orange-500 font-medium tracking-wide uppercase text-sm transition-colors duration-300 py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Design Service
             </Link>
             <Link
               href="/contact"

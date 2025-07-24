@@ -36,7 +36,7 @@ export default function Home() {
       {/* Featured Benefits */}
       <section className="py-16 md:py-24 lg:py-32 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 max-w-4xl mx-auto">
             <div className="text-center opacity-0 animate-slide-up">
               <div className="w-16 h-16 bg-terracotta/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
@@ -87,34 +87,6 @@ export default function Home() {
               <p className="text-ash leading-relaxed">
                 Sustainably sourced hardwoods and premium fabrics ensure lasting beauty and
                 durability in every piece.
-              </p>
-            </div>
-
-            <div
-              className="text-center opacity-0 animate-slide-up"
-              style={{ animationDelay: '0.4s' }}
-            >
-              <div className="w-16 h-16 bg-dusty/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-8 h-8 text-dusty"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="font-display text-xl font-medium text-deep-charcoal mb-4">
-                Design Service
-              </h3>
-              <p className="text-ash leading-relaxed">
-                Professional design service to ensure perfect integration with your existing
-                interior design.
               </p>
             </div>
           </div>

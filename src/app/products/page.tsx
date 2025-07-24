@@ -111,27 +111,6 @@ export default function ProductsPage() {
           )}
         </div>
       </section>
-
-      {/* Custom Design CTA */}
-      <section className="py-16 md:py-24 lg:py-32 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-['Playfair_Display'] text-3xl md:text-4xl font-light text-white mb-6">
-            Need Something Custom?
-          </h2>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Our design team can create bespoke modular systems tailored to your space and your cats'
-            specific needs. Every piece is crafted to order.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-orange-500 text-white font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-orange-600 hover:shadow-lg">
-              Request Custom Design
-            </button>
-            <button className="px-8 py-3 border-2 border-white text-white font-medium tracking-wide uppercase text-sm transition-all duration-300 hover:bg-white hover:text-gray-900">
-              View Design Process
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

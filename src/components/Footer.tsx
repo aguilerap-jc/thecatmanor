@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <h3 className="font-['Playfair_Display'] text-2xl font-medium mb-6">The Cat Manor</h3>
@@ -65,55 +65,6 @@ export default function Footer() {
                   className="text-gray-300 hover:text-orange-500 transition-colors duration-300"
                 >
                   Eco Line
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/custom"
-                  className="text-gray-300 hover:text-orange-500 transition-colors duration-300"
-                >
-                  Custom Design
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="font-medium text-white mb-6 tracking-wide uppercase text-sm">
-              Services
-            </h4>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/design-service"
-                  className="text-gray-300 hover:text-orange-500 transition-colors duration-300"
-                >
-                  Design Service
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/installation"
-                  className="text-gray-300 hover:text-orange-500 transition-colors duration-300"
-                >
-                  Professional Installation
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/warranty"
-                  className="text-gray-300 hover:text-orange-500 transition-colors duration-300"
-                >
-                  Lifetime Warranty
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/care"
-                  className="text-gray-300 hover:text-orange-500 transition-colors duration-300"
-                >
-                  Care & Maintenance
                 </Link>
               </li>
             </ul>
