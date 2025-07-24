@@ -202,8 +202,13 @@ export function CartProvider({ children }: CartProviderProps) {
     dispatch({ type: 'SET_LOADING', payload: true });
 
     try {
+      // Convert raw variant ID to Global ID format if needed
+      const globalVariantId = variantId.startsWith('gid://') 
+        ? variantId 
+        : `gid://shopify/ProductVariant/${variantId}`;
+
       const lineItemsToAdd = [{
-        variantId: variantId,
+        variantId: globalVariantId,
         quantity: quantity,
       }];
 
