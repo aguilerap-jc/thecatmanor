@@ -34,11 +34,23 @@ export default function ProductsPage() {
     loadProducts();
   }, []);
 
-  const filteredProducts = products.filter(product => {
-    if (selectedCollection === 'All') return true;
-    if (selectedCollection === 'Shopify') return isShopifyProduct(product);
-    return product.collection === selectedCollection;
-  });
+  // Filter products based on selected collection
+  const filteredProducts =
+    selectedCollection === 'All'
+      ? products
+      : products.filter(product => {
+          if (selectedCollection === 'Shopify') {
+            return isShopifyProduct(product);
+          }
+          return product.collection === selectedCollection;
+        });
+
+  // Log errors for debugging (prevents unused variable warning)
+  React.useEffect(() => {
+    if (error) {
+      console.warn('Product loading error:', error);
+    }
+  }, [error]);
 
   return (
     <div className="min-h-screen bg-gray-50">

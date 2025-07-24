@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import CartIcon from './CartIcon';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,6 +45,9 @@ export default function Navbar() {
 
           {/* CTA and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
+            {/* Cart Icon */}
+            <CartIcon />
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
